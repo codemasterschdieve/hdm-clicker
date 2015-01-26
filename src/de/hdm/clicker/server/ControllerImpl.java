@@ -103,7 +103,7 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 	 */
 	private String signedInParticipant = null;
 	
-	TempDatabase tempDB = null;
+	TempDatenbank tempDB = null;
 	DBConnection dbcon = new DBConnection();
 	
 	/*
@@ -113,18 +113,18 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 	 */
 	
 	public void getQuizCache(Quiz quiz) throws RuntimeException {
-		for(QuizPackage q : TempDatabase.getQpv()) {
+		for(QuizPackage q : TempDatenbank.getQpv()) {
 			if(q.getId() == quiz.getId() && q.getQuiz().getVersion() == quiz.getVersion()) {
 				return;
 			}
 		}
 		QuizPackage qp = this.quizPackageMapper.findByQuiz(quiz);
-		TempDatabase.getQpv().add(qp);
+		TempDatenbank.getQpv().add(qp);
 	}
 	
 	
 	public Vector<Question> loadQuestions(Quiz quiz) throws RuntimeException {
-		for (QuizPackage qp : TempDatabase.getQpv()) {
+		for (QuizPackage qp : TempDatenbank.getQpv()) {
 			if (qp.getId() == quiz.getId() && qp.getQuiz().getVersion() == quiz.getVersion()) {
 				Vector<Question> v = new Vector<Question>(qp.getQuestionHT().values());
 				return v;
@@ -141,7 +141,7 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 	 * 			weitergereicht. 
 	 */
 	public void checkAllQuiz() throws RuntimeException {
-		tempDB = TempDatabase.get();
+		tempDB = TempDatenbank.get();
 		closeOverdueQuizzes();
 		openAutoQuizzes();
 		//if (!loaded) {
@@ -152,7 +152,7 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 	
 	
 	/**
-	 * Flag zur Steuerung des Ladens von aktiven Quizzen in die TempDatabase
+	 * Flag zur Steuerung des Ladens von aktiven Quizzen in die TempDatenbank
 	 */
 	private static boolean loaded = false;
 
@@ -566,10 +566,10 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 			}
 			// Update der Question
 			Question tmpQ = this.questionMapper.update(question);
-			// Ggf. TempDatabase aktualisieren
-			for(int i = 0; i < TempDatabase.getQpv().size(); i++) {
-				if (TempDatabase.getQpv().elementAt(i).getQuestionHT().containsKey(new Integer(question.getId()))) {
-					TempDatabase.getQpv().setElementAt(this.quizPackageMapper.findByQuiz(TempDatabase.getQpv().elementAt(i).getQuiz()), i);
+			// Ggf. TempDatenbank aktualisieren
+			for(int i = 0; i < TempDatenbank.getQpv().size(); i++) {
+				if (TempDatenbank.getQpv().elementAt(i).getQuestionHT().containsKey(new Integer(question.getId()))) {
+					TempDatenbank.getQpv().setElementAt(this.quizPackageMapper.findByQuiz(TempDatenbank.getQpv().elementAt(i).getQuiz()), i);
 				}
 			}
 			return tmpQ;
@@ -716,10 +716,10 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 			
 			Quiz q = this.quizMapper.update(quiz, vq);
 			loadActiveQuizzes();
-			// Ggf. TempDatabase aktualisieren
-			for(int i = 0; i < TempDatabase.getQpv().size(); i++) {
-				if (TempDatabase.getQpv().elementAt(i).getId() == quiz.getId() && TempDatabase.getQpv().elementAt(i).getQuiz().getVersion() == quiz.getVersion()) {
-					TempDatabase.getQpv().setElementAt(this.quizPackageMapper.findByQuiz(TempDatabase.getQpv().elementAt(i).getQuiz()), i);
+			// Ggf. TempDatenbank aktualisieren
+			for(int i = 0; i < TempDatenbank.getQpv().size(); i++) {
+				if (TempDatenbank.getQpv().elementAt(i).getId() == quiz.getId() && TempDatenbank.getQpv().elementAt(i).getQuiz().getVersion() == quiz.getVersion()) {
+					TempDatenbank.getQpv().setElementAt(this.quizPackageMapper.findByQuiz(TempDatenbank.getQpv().elementAt(i).getQuiz()), i);
 				}
 			}
 			return q;
@@ -852,10 +852,10 @@ public class ControllerImpl extends RemoteServiceServlet implements Controller {
 			
 			this.quizMapper.delete(quiz);
 			loadActiveQuizzes();
-			// Ggf. TempDatabase aktualisieren
-			for(int i = 0; i < TempDatabase.getQpv().size(); i++) {
-				if (TempDatabase.getQpv().elementAt(i).getId() == quiz.getId() && TempDatabase.getQpv().elementAt(i).getQuiz().getVersion() == quiz.getVersion()) {
-					TempDatabase.getQpv().removeElementAt(i);
+			// Ggf. TempDatenbank aktualisieren
+			for(int i = 0; i < TempDatenbank.getQpv().size(); i++) {
+				if (TempDatenbank.getQpv().elementAt(i).getId() == quiz.getId() && TempDatenbank.getQpv().elementAt(i).getQuiz().getVersion() == quiz.getVersion()) {
+					TempDatenbank.getQpv().removeElementAt(i);
 				}
 			}
 		}
